@@ -10,12 +10,17 @@ const Contact = () => {
     setResult('Sending....');
     const formData = new FormData(event.target);
 
-    formData.append('access_key', 'd7757f90-0563-4e29-8d61-3900035646d5');
-
     try {
-      const response = await fetch('https://api.web3forms.com/submit', {
+      const response = await fetch('http://127.0.0.1:8000/api/submit-contact/', {  // Updated URL
         method: 'POST',
-        body: formData,
+        body: JSON.stringify({
+          name: formData.get('name'),
+          phone_number: formData.get('phone'),  // Updated field to match backend
+          message: formData.get('message'),
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
 
       const data = await response.json();
@@ -24,11 +29,9 @@ const Contact = () => {
         setResult('Form Submitted Successfully');
         event.target.reset();
       } else {
-        console.error('Error:', data);
         setResult(data.message);
       }
     } catch (error) {
-      console.error('Error:', error);
       setResult('An error occurred while submitting the form.');
     }
   };

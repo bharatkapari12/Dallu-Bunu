@@ -3,20 +3,47 @@ import './Form.css';
 
 const Employment = () => {
   const [formData, setFormData] = useState({
-    fullName: '',
+    full_name: '',  // Match backend field name
     email: '',
     skills: '',
     country: '',
-    jobTitle: '',
+    job_title: '',  // Match backend field name
   });
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('Employment Form Data:', formData);
+
+    try {
+      const response = await fetch('http://localhost:8000/api/employment-inquiry/', { // Adjust URL to your API endpoint
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        alert('Form Submitted Successfully');
+        setFormData({
+          full_name: '',
+          email: '',
+          skills: '',
+          country: '',
+          job_title: '',
+        });
+      } else {
+        alert('Error: ' + data.message);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred while submitting the form.');
+    }
   };
 
   return (
@@ -24,12 +51,12 @@ const Employment = () => {
       <h2>Employment Inquiry</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="fullName">Full Name:</label>
+          <label htmlFor="full_name">Full Name:</label>
           <input
             type="text"
-            id="fullName"
-            name="fullName"
-            value={formData.fullName}
+            id="full_name"
+            name="full_name"  // Match backend field name
+            value={formData.full_name}
             onChange={handleChange}
             required
           />
@@ -68,12 +95,12 @@ const Employment = () => {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="jobTitle">Job Title:</label>
+          <label htmlFor="job_title">Job Title:</label>
           <input
             type="text"
-            id="jobTitle"
-            name="jobTitle"
-            value={formData.jobTitle}
+            id="job_title"
+            name="job_title"  // Match backend field name
+            value={formData.job_title}
             onChange={handleChange}
             required
           />
